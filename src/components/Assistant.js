@@ -107,6 +107,7 @@ const Assistant = () => {
   ];
   const [intentInfo, topIntent, clearIntent] = useRecognize(
     textFromMic,
+    // "幫我搜尋包含雞蛋、番茄的食譜",
     STT_Commands
   );
 
@@ -132,25 +133,26 @@ const Assistant = () => {
 
   // 語音執行 Recipe.Search 意圖
   const STT_handleRecipeSearch = async (entities) => {
-    const foods = entities.Foods;
+    const foods = entities.$instance.Foods;
     // const food = entities.Food;
     // const recipe = entities.Recipe;
     if (!foods) return;
-    let result = await algoliaSearch("recipes", foods[0][0]);
+    //let result = await algoliaSearch("recipes", foods[0][0]);
+    let result = await algoliaSearch("recipes", foods);
 
     if (foods?.length <= 0 || result?.length <= 0) {
       displayAndSpeakResponse("沒有找到符合需求的項目");
       return;
     }
 
-    console.log("recipeQuery is: ", foods[0]);
+    console.log("recipeQuery is: ", foods);
 
     console.log("ss", result);
 
     setRecipeResult(result);
-    displayAndSpeakResponse(
-      `幫您找到 ${result.length} 個關於${foods[0]} 的食譜`
-    );
+    displayAndSpeakResponse(`幫您找到 ${result.length} 個相關食譜，需要開啟哪一個呢？`);
+    const delayAI_Awake = debounce(AI_Awake, 2000);
+    delayAI_Awake();
   };
 
   // 語音執行 Fridge.Add 意圖 -> 新增食材
@@ -238,7 +240,7 @@ const Assistant = () => {
     console.log("the listened number is ", number);
     console.log("recipeResult in stt select item func is ", recipeResult);
     // case1: 食譜選擇，利用語音控制並開啟第幾道的食譜
-    if (recipeResult && index) {
+    if (recipeResult) {
       console.log("run recipe select");
       displayAndSpeakResponse(`幫您開啟第${number}道食譜`);
       dispatch({
@@ -320,10 +322,7 @@ const Assistant = () => {
       recognizer.recognized = async function (script, e) {
         console.log("recognized text", e.result.text);
         const recognizedText = e.result.text;
-        // const res = await axios.get(
-        //   `https://damn-token.herokuapp.com/api/cut-text?q=${recognizedText}`
-        // );
-        //console.log("res array : ", res);
+
         if (recognizedText === "小當家。") {
           // dispatch({
           //   type: actionTypes.SET_TEXT_FROM_MIC,

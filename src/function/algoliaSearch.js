@@ -22,6 +22,13 @@ const algoliaClient = algoliasearch(
 const algoliaSearch = (index = "ingredients", value, userId) => {
   let algolia = algoliaClient.initIndex(index);
   if (!value) return "no value input";
+  // 如果 value 是 Array
+
+  if (Array.isArray(value)) {
+    let tempText = "";
+    value = value.map((food) => tempText.concat(food.text));
+    console.log(`聯合字串為 ${value}`);
+  }
   if (index === "fridge" || index === "historyIngredients") {
     algolia = algoliaClient.initIndex("users");
   }
@@ -100,13 +107,11 @@ const algoliaSearch = (index = "ingredients", value, userId) => {
       const result = await algolia.search(value, {
         hitsPerPage: 10,
         //   https://www.algolia.com/doc/api-reference/api-parameters/filters/#examples
-        filters: isPersonalSearch
-          ? `objectID:${userId}`
-          : "",
+        filters: isPersonalSearch ? `objectID:${userId}` : "",
         //   analytics: true,
         similarQuery: value,
       });
-      //console.log(result?.hits);
+      console.log(result?.hits);
       return result?.hits;
     } catch (err) {
       console.log(err);
@@ -114,6 +119,7 @@ const algoliaSearch = (index = "ingredients", value, userId) => {
   };
 
   flatCollection();
+  console.log(`ss聯合字串為 ${value}`);
   const result = fetchData(value);
   //console.log(result);
 
