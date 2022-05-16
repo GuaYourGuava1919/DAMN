@@ -92,12 +92,6 @@ function IndexTop() {
 
   console.log("recipeResults: ", recipeResults);
 
-  const [age, setAge] = React.useState("");
-
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-
   const fetchNotifications = async () => {
     console.log(userId);
     const q = firebaseQuery(
@@ -111,7 +105,7 @@ function IndexTop() {
       // console.log(doc.id, " => ", doc.data());
       temp.push({ id: doc.id, ...doc.data() });
     });
-    temp = sortBy(temp, ["createdAt.seconds"]).reverse()
+    temp = sortBy(temp, ["createdAt.seconds"]).reverse();
     console.log("temp: ", temp);
     setNotifications(temp);
   };
@@ -119,7 +113,12 @@ function IndexTop() {
   // useEffect(() => {
   //   fetchNotifications();
   // }, []);
-
+  const selectSearchResult = (data) => {
+    const q = data?.result.title;
+    setQuery(q);
+    setSearchParams(q);
+    navigate(`/recipe/search/?query=${q}`);
+  };
   return (
     <div className="recipeIndexTop">
       <div className="recipeIndexTop__slogan">
@@ -147,11 +146,12 @@ function IndexTop() {
           onSearchChange={(e) => setQuery(e.target.value)}
           results={recipeResults}
           noResultsMessage="找不到相關食譜"
-          // onResultSelect={}
+          onResultSelect={(_, data) => selectSearchResult(data)}
+          onBlur={() => selectSearchResult([])}
         />
         <SearchIcon onClick={onResultSelect} />
       </div>
-
+      {/* notice dialog */}
       <Dialog
         open={isNoticeDialogOpen}
         onClose={handleClose}

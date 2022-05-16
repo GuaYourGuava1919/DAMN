@@ -18,6 +18,7 @@ function SearchBar() {
 
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
+  const [isFocus, setIsFocus] = useState(false);
   const [recipeResults, setRecipeResults] = useState([]);
   const [query, setQuery] = useState("");
   const results = useSearch("recipes", query);
@@ -41,34 +42,45 @@ function SearchBar() {
     });
   }
 
-  function onResultSelect(e, { result }) {
-    console.log(query);
+  function onResultSelect(data) {
+    const new_q = data.result.title;
     //setSearchParams(query);
-    navigate(`/recipe/search/?query=${query}`);
+    navigate(`/recipe/search/?query=${new_q}`);
   }
 
   useEffect(() => {
-    const newResults = results.map((item) => ({
-      title: item.name,
-      id: item.objectID,
-    }));
+    if (isFocus) {
+      const newResults = results.map((item) => ({
+        title: item.name,
+        id: item.objectID,
+        // image: item.thumbnail.url,
+      }));
 
-    setRecipeResults(newResults);
+      setRecipeResults(newResults);
+    }
   }, [results]);
   console.log("recipeResults: ", recipeResults);
 
+  useEffect(() => {
+    if (q) setQuery(q);
+  }, [q]);
+
   return (
-    <div className="recipeSearchBar">
+    <div className="recipeSearchBar ">
       <Link to="/">
         <ArrowBackIosIcon sx={{ color: "white" }} />
       </Link>
       <Search
-        placeholder={q}
+        fluid
+        placeholder={"想吃點什麼？"}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setRecipeResults([])}
+        open={false}
         value={query}
         onSearchChange={(e) => setQuery(e.target.value)}
         results={recipeResults}
         noResultsMessage="找不到相關食譜"
-        onResultSelect={onResultSelect}
+        onResultSelect={(_, data) => onResultSelect(data)}
       />
       <SearchIcon onClick={onResultSelect} sx={{ color: "white" }} />
     </div>
