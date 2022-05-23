@@ -90,8 +90,8 @@ function RecommendCard() {
         ))}
         {/* loading  card skelton */}
         {champion.length === 0 &&
-          [...new Array(3)].map((item) => (
-            <Grid item xs={12} md={6}>
+          [...new Array(3)].map((item,index) => (
+            <Grid item xs={12} md={6} key={index}>
               <Paper
                 className="recommendCard__img"
                 sx={{ display: "flex", padding: "10px" }}

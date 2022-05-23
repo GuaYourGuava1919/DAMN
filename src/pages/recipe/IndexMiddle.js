@@ -47,8 +47,8 @@ function IndexMiddle() {
           <HotCard key={item.id} data={item} />
         ))}
         {hitoRecipes.length === 0 &&
-          [...new Array(3)].map((item) => (
-            <div className="hotCard">
+          [...new Array(3)].map((item,index) => (
+            <div className="hotCard" key={index}>
               <Skeleton
                 sx={{ width: 280, height: 240, borderRadius: 5 }}
                 animation="wave"

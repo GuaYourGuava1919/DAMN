@@ -114,7 +114,8 @@ function IndexTop() {
   //   fetchNotifications();
   // }, []);
   const selectSearchResult = (data) => {
-    const q = data?.result.title;
+    if (!data) return;
+    const q = data?.result?.title;
     setQuery(q);
     setSearchParams(q);
     navigate(`/recipe/search/?query=${q}`);

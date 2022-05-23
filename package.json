@@ -94,5 +94,5 @@
       "ALGOLIASEARCH_SEARCH_ONLY_KEY"
     ]
   },
-  "proxy": "http://localhost:3000"
+  "proxy": "http://localhost:3000/"
 }
