@@ -148,7 +148,7 @@ function IndexTop() {
           results={recipeResults}
           noResultsMessage="找不到相關食譜"
           onResultSelect={(_, data) => selectSearchResult(data)}
-          onBlur={() => selectSearchResult([])}
+          //onBlur={() => selectSearchResult([])}
         />
         <SearchIcon onClick={onResultSelect} />
       </div>
